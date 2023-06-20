@@ -1,11 +1,14 @@
 import random
 import time
+import threading
 
 class Transmissor:
     def __init__(self, id):
         self.id = id
         self.tempo_inicio_sensing = random.uniform(0.0, 2.0)
         self.duracao_sensing = random.uniform(0.5, 2.0)
+        self.thread = None
+        self.transmitindo = False
 
     def verificar_meio(self):
         return random.choice([True, False])  # Simula o meio de transmissão ocupado ou livre
@@ -19,6 +22,12 @@ class Transmissor:
         time.sleep(espera)  # Espera um tempo exponencial truncado
 
     def transmitir(self, dados):
+        self.thread = threading.Thread(target=self.enviar_dados, args=(dados,))
+        self.thread.start()
+
+    def enviar_dados(self, dados):
+        self.transmitindo = True
+
         # Espera o tempo de início do sensing
         time.sleep(self.tempo_inicio_sensing)
         print(f"Transmissor {self.id} começou o sensing")
@@ -26,19 +35,23 @@ class Transmissor:
         # Realiza o sensing por um tempo específico
         time.sleep(self.duracao_sensing)
 
-        if self.verificar_meio():
-            self.colisao_detectada()
-            tentativa = 0
+        while True:
+            if self.verificar_meio():
+                self.colisao_detectada()
+                tentativa = 0
 
-            while tentativa < 10:  # Limite máximo de tentativas
-                self.backoff_algorithm(tentativa)
-                if not self.verificar_meio():
-                    break
-                tentativa += 1
+                while tentativa < 10:  # Limite máximo de tentativas
+                    self.backoff_algorithm(tentativa)
+                    if not self.verificar_meio():
+                        break
+                    tentativa += 1
+                else:
+                    print(f"Transmissor {self.id} não conseguiu transmitir após várias tentativas")
             else:
-                print(f"Transmissor {self.id} não conseguiu transmitir após várias tentativas")
-        else:
-            print(f"Transmissor {self.id}, dados {dados} transmitidos com sucesso")
+                print(f"Transmissor {self.id}, dados {dados} transmitidos com sucesso")
+                break
+
+        self.transmitindo = False
 
 # Criando os transmissores
 transmissor1 = Transmissor(1)
@@ -51,3 +64,7 @@ dados_transmissor2 = "dj maiquinhos"
 # Iniciando a simulação
 transmissor1.transmitir(dados_transmissor1)
 transmissor2.transmitir(dados_transmissor2)
+
+# Aguardando a finalização das transmissões
+while transmissor1.transmitindo or transmissor2.transmitindo:
+    time.sleep(0.1)
