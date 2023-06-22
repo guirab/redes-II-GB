@@ -56,15 +56,21 @@ class Transmissor:
 # Criando os transmissores
 transmissor1 = Transmissor(1)
 transmissor2 = Transmissor(2)
+transmissor3 = Transmissor(3)
+transmissor4 = Transmissor(4)
 
 # Definindo os dados dos quadros
 dados_transmissor1 = "transmissor 1"
 dados_transmissor2 = "transmissor 2"
+dados_transmissor3 = "transmissor 3"
+dados_transmissor4 = "transmissor 4"
 
 # Iniciando a simulação
 transmissor1.transmitir(dados_transmissor1)
 transmissor2.transmitir(dados_transmissor2)
+transmissor3.transmitir(dados_transmissor3)
+transmissor4.transmitir(dados_transmissor4)
 
 # Aguardando a finalização das transmissões
-while transmissor1.transmitindo or transmissor2.transmitindo:
+while transmissor1.transmitindo or transmissor2.transmitindo or transmissor3.transmitindo or transmissor4.transmitindo:
     time.sleep(0.1)
