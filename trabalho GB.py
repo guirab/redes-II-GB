@@ -58,8 +58,8 @@ transmissor1 = Transmissor(1)
 transmissor2 = Transmissor(2)
 
 # Definindo os dados dos quadros
-dados_transmissor1 = "batatinha"
-dados_transmissor2 = "dj maiquinhos"
+dados_transmissor1 = "transmissor 1"
+dados_transmissor2 = "transmissor 2"
 
 # Iniciando a simulação
 transmissor1.transmitir(dados_transmissor1)
